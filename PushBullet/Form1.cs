@@ -12,6 +12,7 @@ using System.Threading;
 using System.Runtime.InteropServices;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System.Text.RegularExpressions;
 
 namespace PushBullet
 {
@@ -184,7 +185,7 @@ namespace PushBullet
     private void contextMenuStrip1_Opening(object sender, CancelEventArgs e)
     {
       if (Clipboard.ContainsText() && csrf != "") {
-        if (Clipboard.GetText().StartsWith("http://") || Clipboard.GetText().StartsWith("https://")) {
+        if (Regex.Match(Clipboard.GetText(), "^(http|https):").Success) {
           linkToolStripMenuItem.Enabled = true;
           noteToolStripMenuItem.Enabled = false;
         }
