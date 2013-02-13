@@ -184,22 +184,12 @@ namespace PushBullet
 
     private void contextMenuStrip1_Opening(object sender, CancelEventArgs e)
     {
-      if (Clipboard.ContainsText() && csrf != "") {
-        if (Regex.Match(Clipboard.GetText(), "^(http|https):").Success) {
-          linkToolStripMenuItem.Enabled = true;
-          noteToolStripMenuItem.Enabled = false;
-        }
-        else {
-          linkToolStripMenuItem.Enabled = false;
-          noteToolStripMenuItem.Enabled = true;
-        }
-        loginToolStripMenuItem.Visible = false;
-      }
-      else {
-        linkToolStripMenuItem.Enabled = false;
-        noteToolStripMenuItem.Enabled = false;
-        loginToolStripMenuItem.Visible = true;
-      }
+      bool bIsText = Clipboard.ContainsText() && csrf != "";
+      bool bIsLink = bIsText && Regex.Match(Clipboard.GetText(), "^(http|https):").Success;
+
+      linkToolStripMenuItem.Enabled = bIsLink;
+      noteToolStripMenuItem.Enabled = bIsText && !bIsLink;
+      loginToolStripMenuItem.Visible = csrf == "";
     }
 
     private void notifyIcon1_MouseDoubleClick(object sender, MouseEventArgs e)
