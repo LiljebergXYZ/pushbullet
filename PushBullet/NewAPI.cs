@@ -16,17 +16,20 @@ using System.Text.RegularExpressions;
 
 namespace PushBullet
 {
-  public partial class Form1 : Form
+  public partial class NewAPI : Form
   {
     #region Members
     public static CookieContainer cookieContainer = new CookieContainer();
     private string HOST = "https://www.pushbullet.com";
     private string csrf = "";
     private JArray devices;
+    private JArray shared_devices;
     private bool hideMe;
+    private string apikey = "";
+    private string version = "1.0";
     #endregion
 
-    public Form1()
+    public NewAPI()
     {
       InitializeComponent();
     }
@@ -34,7 +37,6 @@ namespace PushBullet
     private void Form1_Load(object sender, EventArgs e)
     {
       //Default values! 
-      label1.Text = "";
       comboBox1.SelectedIndex = 0;
 
       //Do we want to open normally or in tray?
@@ -44,6 +46,17 @@ namespace PushBullet
           hideMe = true;
         }
       }
+    }
+
+    public WebClient AuthenticatedWebClient()
+    {
+      WebClient wc = new WebClient();
+      wc.Proxy = null;
+      string authEncoded = Convert.ToBase64String(Encoding.UTF8.GetBytes(apikey+":"));
+      wc.Headers[HttpRequestHeader.UserAgent] = "Pushbullet.Desktop.Application(" + version + ")";
+      wc.Headers[HttpRequestHeader.Authorization] = string.Format("Basic {0}", authEncoded);
+
+      return wc;
     }
 
     protected override void OnFormClosing(FormClosingEventArgs e)
@@ -63,114 +76,80 @@ namespace PushBullet
 
     public void GetDevices()
     {
+      string result = null;
+      myBox.Items.Clear();
+      sharedBox.Items.Clear();
+
+      WebClient wc = AuthenticatedWebClient();
+
+      wc.Headers[HttpRequestHeader.Accept] = "application/json";
       try {
-        listBox1.Items.Clear();
-        HttpWebRequest req = (HttpWebRequest)WebRequest.Create(HOST + "/devices");
-
-        req.CookieContainer = cookieContainer;
-        req.Method = "GET";
-        req.Accept = "application/json";
-
-        HttpWebResponse res = null;
         try {
-          res = (HttpWebResponse)req.GetResponse();
+          result = wc.DownloadString("https://www.pushbullet.com/api/devices");
         }
-        catch (WebException ex) {
-          res = (HttpWebResponse)ex.Response;
+        catch (Exception ex) {
+          result = ex.ToString();
         }
-        if (res.StatusCode == HttpStatusCode.OK) {
-          StreamReader reader = new StreamReader(res.GetResponseStream());
-          JObject json = (JObject)JsonConvert.DeserializeObject(reader.ReadToEnd());
+        if (result != null) {
+          JObject json = (JObject)JsonConvert.DeserializeObject(result);
           csrf = (string)json["csrf"];
           devices = (JArray)json["devices"];
+          shared_devices = (JArray)json["shared_devices"];
           foreach (JObject o in devices) {
-            listBox1.Items.Add(o["extras"]["model"]);
+            myBox.Items.Add(o["extras"]["model"]);
+          }
+          foreach (JObject o in shared_devices) {
+            sharedBox.Items.Add(o["ownerName"] + " - " + o["extras"]["model"]);
           }
 
         }
-        else if (res.StatusCode == HttpStatusCode.NotFound) {
-          textBox1.Text = "We failed and the site returned 404";
+        else {
+          MessageBox.Show("We failed and the site returned 404");
         }
-        label1.Text = "Devices:";
-        listBox1.SelectedIndex = 0;
+        myBox.SelectedIndex = 0;
+        notifyIcon1.ShowBalloonTip(1000, "Login", "The login was successful!", ToolTipIcon.Info);
+        loginBtn.Visible = false;
       }
       catch (Exception ex) {
         MessageBox.Show(ex.ToString());
+        MessageBox.Show(result);
       }
     }
 
     private void button2_Click(object sender, EventArgs e)
     {
-      //Let's open the authentication window!
-      new Form2(this).ShowDialog();
+      GetDevices();
     }
 
     private void PushNotification(string type, string title, string message)
     {
       try {
-        HttpWebRequest reqs = (HttpWebRequest)WebRequest.Create(HOST + "/push/" + type);
-        reqs.CookieContainer = cookieContainer;
-        reqs.Method = "POST";
-        reqs.ContentType = "application/json";
-        reqs.Accept = "application/json";
+        WebClient wc = AuthenticatedWebClient();
+        wc.Headers[HttpRequestHeader.ContentType] = "application/x-www-form-urlencoded";
+        wc.Headers[HttpRequestHeader.Accept] = "application/json";
 
-        Data nd = null;
+        int deviceId;
+        if(myBox.SelectedIndex < 0){
+          deviceId = (int)shared_devices[sharedBox.SelectedIndex]["id"];
+        }else{
+          deviceId = (int)devices[myBox.SelectedIndex]["id"];
+        }
+
+        string parameters = String.Format("device_id={0}&type={1}", deviceId, type);
 
         if (type == "note") {
-          nd = new NoteData();
-          nd.type = type;
-          nd._csrf = csrf;
-          nd.device_id = (int)devices[listBox1.SelectedIndex]["id"];
-          nd.title = title;
-          (nd as NoteData).body = message;
+          parameters += String.Format("&title={0}&body={1}", title, message);
         }
         else if (type == "link") {
-          nd = new LinkData();
-          nd.type = type;
-          nd._csrf = csrf;
-          nd.device_id = (int)devices[listBox1.SelectedIndex]["id"];
-          nd.title = title;
-          (nd as LinkData).url = message;
+          parameters += String.Format("&title={0}&url={1}", title, message);
         }
 
-        string json = JsonConvert.SerializeObject(nd);
-        byte[] utf = System.Text.Encoding.UTF8.GetBytes(json);
-
-        reqs.ContentLength = utf.Length;
-
-        using (Stream streamWriter = reqs.GetRequestStream()) {
-          streamWriter.Write(utf, 0, utf.Length);
-          streamWriter.Close();
-
-          HttpWebResponse httpResponse = (HttpWebResponse)reqs.GetResponse();
-          using (StreamReader streamReader = new StreamReader(httpResponse.GetResponseStream())) {
-            string result = streamReader.ReadToEnd();
-          }
-        }
+        string result = wc.UploadString(HOST + "/api/pushes", parameters);
       }
       catch (Exception ex) {
         MessageBox.Show(ex.ToString());
       }
     }
-
-    #region We got cookies!
-    [DllImport("wininet.dll", CharSet = CharSet.Auto, SetLastError = true)]
-    static extern bool InternetGetCookieEx(string pchURL, string pchCookieName, StringBuilder pchCookieData, ref uint pcchCookieData, int dwFlags, IntPtr lpReserved);
-    const int INTERNET_COOKIE_HTTPONLY = 0x00002000;
-
-    public static string GetGlobalCookies(string uri)
-    {
-      uint datasize = 1024;
-      StringBuilder cookieData = new StringBuilder((int)datasize);
-      if (InternetGetCookieEx(uri, null, cookieData, ref datasize, INTERNET_COOKIE_HTTPONLY, IntPtr.Zero)
-          && cookieData.Length > 0) {
-        return cookieData.ToString().Replace(';', ',');
-      }
-      else {
-        return null;
-      }
-    }
-    #endregion
 
     private void button1_Click_1(object sender, EventArgs e)
     {
@@ -189,7 +168,12 @@ namespace PushBullet
 
       linkToolStripMenuItem.Enabled = bIsLink;
       noteToolStripMenuItem.Enabled = bIsText && !bIsLink;
-      loginToolStripMenuItem.Visible = csrf == "";
+      if (csrf != "") {
+        loginToolStripMenuItem.Visible = false;
+      }
+      else {
+        loginToolStripMenuItem.Visible = true;
+      }
     }
 
     private void notifyIcon1_MouseDoubleClick(object sender, MouseEventArgs e)
@@ -221,15 +205,29 @@ namespace PushBullet
 
     private void loginToolStripMenuItem_Click(object sender, EventArgs e)
     {
-      button2.PerformClick();
+      loginBtn.PerformClick();
     }
 
     private void Form1_Activated(object sender, EventArgs e)
     {
       if (hideMe) {
-        Hide();
+        this.Hide();
         hideMe = false;
       }
+    }
+
+    private void listBox2_SelectedIndexChanged(object sender, EventArgs e)
+    {
+      int l = sharedBox.SelectedIndex;
+      myBox.ClearSelected();
+      sharedBox.SelectedIndex = l;
+    }
+
+    private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
+    {
+      int l = myBox.SelectedIndex;
+      sharedBox.ClearSelected();
+      myBox.SelectedIndex = l;
     }
 
   }
