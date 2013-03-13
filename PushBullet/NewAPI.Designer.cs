@@ -34,6 +34,10 @@
         this.pushBtn = new System.Windows.Forms.Button();
         this.notifyIcon1 = new System.Windows.Forms.NotifyIcon(this.components);
         this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+        this.linkToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+        this.noteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+        this.addressToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+        this.loginToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
         this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
         this.myBox = new System.Windows.Forms.ListBox();
         this.noteTitle = new System.Windows.Forms.TextBox();
@@ -56,20 +60,16 @@
         this.addressTitle = new System.Windows.Forms.TextBox();
         this.label7 = new System.Windows.Forms.Label();
         this.label8 = new System.Windows.Forms.Label();
-        this.label10 = new System.Windows.Forms.Label();
-        this.label9 = new System.Windows.Forms.Label();
-        this.textBox2 = new System.Windows.Forms.TextBox();
-        this.textBox1 = new System.Windows.Forms.TextBox();
-        this.label11 = new System.Windows.Forms.Label();
-        this.textBox3 = new System.Windows.Forms.TextBox();
-        this.label12 = new System.Windows.Forms.Label();
-        this.textBox4 = new System.Windows.Forms.TextBox();
         this.tabPage4 = new System.Windows.Forms.TabPage();
         this.button1 = new System.Windows.Forms.Button();
-        this.linkToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-        this.noteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-        this.addressToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-        this.loginToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+        this.textBox4 = new System.Windows.Forms.TextBox();
+        this.label12 = new System.Windows.Forms.Label();
+        this.textBox3 = new System.Windows.Forms.TextBox();
+        this.label11 = new System.Windows.Forms.Label();
+        this.textBox1 = new System.Windows.Forms.TextBox();
+        this.textBox2 = new System.Windows.Forms.TextBox();
+        this.label9 = new System.Windows.Forms.Label();
+        this.label10 = new System.Windows.Forms.Label();
         this.contextMenuStrip1.SuspendLayout();
         this.tabControl1.SuspendLayout();
         this.tabPage1.SuspendLayout();
@@ -127,6 +127,38 @@
         this.contextMenuStrip1.Name = "contextMenuStrip1";
         this.contextMenuStrip1.Size = new System.Drawing.Size(153, 136);
         this.contextMenuStrip1.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuStrip1_Opening);
+        // 
+        // linkToolStripMenuItem
+        // 
+        this.linkToolStripMenuItem.Image = global::PushBullet.Properties.Resources.link1;
+        this.linkToolStripMenuItem.Name = "linkToolStripMenuItem";
+        this.linkToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+        this.linkToolStripMenuItem.Text = "Link";
+        this.linkToolStripMenuItem.Click += new System.EventHandler(this.linkToolStripMenuItem_Click);
+        // 
+        // noteToolStripMenuItem
+        // 
+        this.noteToolStripMenuItem.Image = global::PushBullet.Properties.Resources.note;
+        this.noteToolStripMenuItem.Name = "noteToolStripMenuItem";
+        this.noteToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+        this.noteToolStripMenuItem.Text = "Note";
+        this.noteToolStripMenuItem.Click += new System.EventHandler(this.noteToolStripMenuItem_Click);
+        // 
+        // addressToolStripMenuItem
+        // 
+        this.addressToolStripMenuItem.Image = global::PushBullet.Properties.Resources.tag;
+        this.addressToolStripMenuItem.Name = "addressToolStripMenuItem";
+        this.addressToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+        this.addressToolStripMenuItem.Text = "Address";
+        this.addressToolStripMenuItem.Click += new System.EventHandler(this.addressToolStripMenuItem_Click);
+        // 
+        // loginToolStripMenuItem
+        // 
+        this.loginToolStripMenuItem.Image = global::PushBullet.Properties.Resources.lock1;
+        this.loginToolStripMenuItem.Name = "loginToolStripMenuItem";
+        this.loginToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+        this.loginToolStripMenuItem.Text = "Authenticate";
+        this.loginToolStripMenuItem.Click += new System.EventHandler(this.loginToolStripMenuItem_Click);
         // 
         // exitToolStripMenuItem
         // 
@@ -333,73 +365,6 @@
         this.label8.TabIndex = 13;
         this.label8.Text = "Name:";
         // 
-        // label10
-        // 
-        this.label10.AutoSize = true;
-        this.label10.Location = new System.Drawing.Point(7, 46);
-        this.label10.Name = "label10";
-        this.label10.Size = new System.Drawing.Size(30, 13);
-        this.label10.TabIndex = 17;
-        this.label10.Text = "Title:";
-        // 
-        // label9
-        // 
-        this.label9.AutoSize = true;
-        this.label9.Location = new System.Drawing.Point(7, 69);
-        this.label9.Name = "label9";
-        this.label9.Size = new System.Drawing.Size(55, 13);
-        this.label9.TabIndex = 16;
-        this.label9.Text = "Note item:";
-        // 
-        // textBox2
-        // 
-        this.textBox2.Location = new System.Drawing.Point(66, 43);
-        this.textBox2.Name = "textBox2";
-        this.textBox2.Size = new System.Drawing.Size(176, 20);
-        this.textBox2.TabIndex = 14;
-        // 
-        // textBox1
-        // 
-        this.textBox1.Location = new System.Drawing.Point(66, 66);
-        this.textBox1.Name = "textBox1";
-        this.textBox1.Size = new System.Drawing.Size(176, 20);
-        this.textBox1.TabIndex = 15;
-        this.textBox1.Tag = "item1";
-        // 
-        // label11
-        // 
-        this.label11.AutoSize = true;
-        this.label11.Location = new System.Drawing.Point(7, 92);
-        this.label11.Name = "label11";
-        this.label11.Size = new System.Drawing.Size(55, 13);
-        this.label11.TabIndex = 19;
-        this.label11.Text = "Note item:";
-        // 
-        // textBox3
-        // 
-        this.textBox3.Location = new System.Drawing.Point(66, 89);
-        this.textBox3.Name = "textBox3";
-        this.textBox3.Size = new System.Drawing.Size(176, 20);
-        this.textBox3.TabIndex = 18;
-        this.textBox3.Tag = "item1";
-        // 
-        // label12
-        // 
-        this.label12.AutoSize = true;
-        this.label12.Location = new System.Drawing.Point(7, 115);
-        this.label12.Name = "label12";
-        this.label12.Size = new System.Drawing.Size(55, 13);
-        this.label12.TabIndex = 21;
-        this.label12.Text = "Note item:";
-        // 
-        // textBox4
-        // 
-        this.textBox4.Location = new System.Drawing.Point(66, 112);
-        this.textBox4.Name = "textBox4";
-        this.textBox4.Size = new System.Drawing.Size(176, 20);
-        this.textBox4.TabIndex = 20;
-        this.textBox4.Tag = "item1";
-        // 
         // tabPage4
         // 
         this.tabPage4.AutoScroll = true;
@@ -417,48 +382,84 @@
         this.tabPage4.Size = new System.Drawing.Size(266, 105);
         this.tabPage4.TabIndex = 3;
         this.tabPage4.Text = "List";
+        this.tabPage4.ToolTipText = "Not available";
         this.tabPage4.UseVisualStyleBackColor = true;
         // 
         // button1
         // 
-        this.button1.Location = new System.Drawing.Point(114, 144);
+        this.button1.Location = new System.Drawing.Point(114, 113);
         this.button1.Name = "button1";
         this.button1.Size = new System.Drawing.Size(75, 23);
         this.button1.TabIndex = 22;
         this.button1.Text = "Add item";
         this.button1.UseVisualStyleBackColor = true;
         // 
-        // linkToolStripMenuItem
+        // textBox4
         // 
-        this.linkToolStripMenuItem.Image = global::PushBullet.Properties.Resources.link1;
-        this.linkToolStripMenuItem.Name = "linkToolStripMenuItem";
-        this.linkToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-        this.linkToolStripMenuItem.Text = "Link";
-        this.linkToolStripMenuItem.Click += new System.EventHandler(this.linkToolStripMenuItem_Click);
+        this.textBox4.Location = new System.Drawing.Point(66, 81);
+        this.textBox4.Name = "textBox4";
+        this.textBox4.Size = new System.Drawing.Size(176, 20);
+        this.textBox4.TabIndex = 20;
+        this.textBox4.Tag = "item1";
         // 
-        // noteToolStripMenuItem
+        // label12
         // 
-        this.noteToolStripMenuItem.Image = global::PushBullet.Properties.Resources.note;
-        this.noteToolStripMenuItem.Name = "noteToolStripMenuItem";
-        this.noteToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-        this.noteToolStripMenuItem.Text = "Note";
-        this.noteToolStripMenuItem.Click += new System.EventHandler(this.noteToolStripMenuItem_Click);
+        this.label12.AutoSize = true;
+        this.label12.Location = new System.Drawing.Point(7, 84);
+        this.label12.Name = "label12";
+        this.label12.Size = new System.Drawing.Size(55, 13);
+        this.label12.TabIndex = 21;
+        this.label12.Text = "Note item:";
         // 
-        // addressToolStripMenuItem
+        // textBox3
         // 
-        this.addressToolStripMenuItem.Image = global::PushBullet.Properties.Resources.tag;
-        this.addressToolStripMenuItem.Name = "addressToolStripMenuItem";
-        this.addressToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-        this.addressToolStripMenuItem.Text = "Address";
-        this.addressToolStripMenuItem.Click += new System.EventHandler(this.addressToolStripMenuItem_Click);
+        this.textBox3.Location = new System.Drawing.Point(66, 58);
+        this.textBox3.Name = "textBox3";
+        this.textBox3.Size = new System.Drawing.Size(176, 20);
+        this.textBox3.TabIndex = 18;
+        this.textBox3.Tag = "item1";
         // 
-        // loginToolStripMenuItem
+        // label11
         // 
-        this.loginToolStripMenuItem.Image = global::PushBullet.Properties.Resources.lock1;
-        this.loginToolStripMenuItem.Name = "loginToolStripMenuItem";
-        this.loginToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-        this.loginToolStripMenuItem.Text = "Authenticate";
-        this.loginToolStripMenuItem.Click += new System.EventHandler(this.loginToolStripMenuItem_Click);
+        this.label11.AutoSize = true;
+        this.label11.Location = new System.Drawing.Point(7, 61);
+        this.label11.Name = "label11";
+        this.label11.Size = new System.Drawing.Size(55, 13);
+        this.label11.TabIndex = 19;
+        this.label11.Text = "Note item:";
+        // 
+        // textBox1
+        // 
+        this.textBox1.Location = new System.Drawing.Point(66, 35);
+        this.textBox1.Name = "textBox1";
+        this.textBox1.Size = new System.Drawing.Size(176, 20);
+        this.textBox1.TabIndex = 15;
+        this.textBox1.Tag = "item1";
+        // 
+        // textBox2
+        // 
+        this.textBox2.Location = new System.Drawing.Point(66, 12);
+        this.textBox2.Name = "textBox2";
+        this.textBox2.Size = new System.Drawing.Size(176, 20);
+        this.textBox2.TabIndex = 14;
+        // 
+        // label9
+        // 
+        this.label9.AutoSize = true;
+        this.label9.Location = new System.Drawing.Point(7, 38);
+        this.label9.Name = "label9";
+        this.label9.Size = new System.Drawing.Size(55, 13);
+        this.label9.TabIndex = 16;
+        this.label9.Text = "Note item:";
+        // 
+        // label10
+        // 
+        this.label10.AutoSize = true;
+        this.label10.Location = new System.Drawing.Point(7, 15);
+        this.label10.Name = "label10";
+        this.label10.Size = new System.Drawing.Size(30, 13);
+        this.label10.TabIndex = 17;
+        this.label10.Text = "Title:";
         // 
         // NewAPI
         // 

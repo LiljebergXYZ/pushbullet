@@ -94,9 +94,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="link.ico" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="link.png" />
   </ItemGroup>
   <ItemGroup>
