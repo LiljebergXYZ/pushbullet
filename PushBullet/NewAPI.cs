@@ -26,7 +26,8 @@ namespace PushBullet
     private JArray shared_devices;
     private bool hideMe;
     private string apikey = "";
-    private string version = "1.0";
+    private string version = "1.1";
+    private WebClient wc;
     #endregion
 
     public NewAPI()
@@ -36,15 +37,18 @@ namespace PushBullet
 
     private void Form1_Load(object sender, EventArgs e)
     {
-      //Default values! 
-      comboBox1.SelectedIndex = 0;
-
       //Do we want to open normally or in tray?
       string[] args = Environment.GetCommandLineArgs();
       foreach (string arg in args) {
         if (arg == "/tray") {
           hideMe = true;
         }
+      }
+
+      apikey = Properties.Settings.Default.APIKey;
+      if (apikey != "")
+      {
+          wc = AuthenticatedWebClient();
       }
     }
 
@@ -76,11 +80,12 @@ namespace PushBullet
 
     public void GetDevices()
     {
+        if (wc == null)
+            wc = AuthenticatedWebClient();
+
       string result = null;
       myBox.Items.Clear();
       sharedBox.Items.Clear();
-
-      WebClient wc = AuthenticatedWebClient();
 
       wc.Headers[HttpRequestHeader.Accept] = "application/json";
       try {
@@ -98,8 +103,12 @@ namespace PushBullet
           foreach (JObject o in devices) {
             myBox.Items.Add(o["extras"]["model"]);
           }
-          foreach (JObject o in shared_devices) {
-            sharedBox.Items.Add(o["ownerName"] + " - " + o["extras"]["model"]);
+          if (shared_devices != null)
+          {
+              foreach (JObject o in shared_devices)
+              {
+                  sharedBox.Items.Add(o["ownerName"] + " - " + o["extras"]["model"]);
+              }
           }
 
         }
@@ -109,6 +118,7 @@ namespace PushBullet
         myBox.SelectedIndex = 0;
         notifyIcon1.ShowBalloonTip(1000, "Login", "The login was successful!", ToolTipIcon.Info);
         loginBtn.Visible = false;
+        pushBtn.Enabled = true;
       }
       catch (Exception ex) {
         MessageBox.Show(ex.ToString());
@@ -143,8 +153,13 @@ namespace PushBullet
         else if (type == "link") {
           parameters += String.Format("&title={0}&url={1}", title, message);
         }
+        else if (type == "address")
+        {
+            parameters += String.Format("&name={0}&address={1}", title, message);
+        }
 
         string result = wc.UploadString(HOST + "/api/pushes", parameters);
+        notifyIcon1.ShowBalloonTip(1000, "Pushed", "Successfully pushed " + type + " to phone", ToolTipIcon.Info);
       }
       catch (Exception ex) {
         MessageBox.Show(ex.ToString());
@@ -153,11 +168,26 @@ namespace PushBullet
 
     private void button1_Click_1(object sender, EventArgs e)
     {
-      if (comboBox1.SelectedItem.ToString() == "link") {
-        PushNotification("link", textBox2.Text, textBox1.Text);
+      if (tabControl1.SelectedTab.Text == "Link") {
+        PushNotification("link", linkTitle.Text, linkUrl.Text);
+          linkTitle.Text = "";
+          linkUrl.Text = "";
       }
-      else if (comboBox1.SelectedItem.ToString() == "note") {
-        PushNotification("note", textBox2.Text, textBox1.Text);
+      else if (tabControl1.SelectedTab.Text == "Note")
+      {
+        PushNotification("note", noteTitle.Text, noteTxt.Text);
+        noteTitle.Text = "";
+        noteTxt.Text = "";
+      }
+      else if (tabControl1.SelectedTab.Text == "Address")
+      {
+          PushNotification("address", addressTitle.Text, addressTxt.Text);
+          addressTitle.Text = "";
+          addressTxt.Text = "";
+      }
+      else if (tabControl1.SelectedTab.Text == "List")
+      {
+          //Todo
       }
     }
 
@@ -168,6 +198,7 @@ namespace PushBullet
 
       linkToolStripMenuItem.Enabled = bIsLink;
       noteToolStripMenuItem.Enabled = bIsText && !bIsLink;
+      addressToolStripMenuItem.Enabled = bIsText && !bIsLink;
       if (csrf != "") {
         loginToolStripMenuItem.Visible = false;
       }
@@ -228,6 +259,17 @@ namespace PushBullet
       int l = myBox.SelectedIndex;
       sharedBox.ClearSelected();
       myBox.SelectedIndex = l;
+    }
+
+    private void button1_Click(object sender, EventArgs e)
+    {
+        //Settings button
+        new SettingsFrm().ShowDialog();
+    }
+
+    private void addressToolStripMenuItem_Click(object sender, EventArgs e)
+    {
+        PushNotification("address", "Address", Clipboard.GetText());
     }
 
   }

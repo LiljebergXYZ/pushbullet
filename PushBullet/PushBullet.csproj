@@ -60,6 +60,12 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SettingsFrm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SettingsFrm.Designer.cs">
+      <DependentUpon>SettingsFrm.cs</DependentUpon>
+    </Compile>
     <EmbeddedResource Include="NewAPI.resx">
       <DependentUpon>NewAPI.cs</DependentUpon>
     </EmbeddedResource>
@@ -68,6 +74,10 @@
       <SubType>Designer</SubType>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <EmbeddedResource Include="SettingsFrm.resx">
+      <DependentUpon>SettingsFrm.cs</DependentUpon>
+    </EmbeddedResource>
+    <None Include="app.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -95,6 +105,7 @@
   <ItemGroup>
     <Content Include="lock.png" />
     <Content Include="pushbullet.ico" />
+    <None Include="tag.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
