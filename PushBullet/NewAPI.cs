@@ -26,7 +26,7 @@ namespace PushBullet
     private JArray shared_devices;
     private bool hideMe;
     private string apikey = "";
-    private string version = "1.1";
+    private string version = "1.3";
     private WebClient wc;
     private List<TextBox> textBoxes = new List<TextBox>();
     private List<Label> listLabels = new List<Label>();
@@ -46,6 +46,10 @@ namespace PushBullet
           hideMe = true;
         }
       }
+      if (args.Length == 4) {
+        QuickPush(args[1], args[2], args[3]);
+        hideMe = true;
+      }
 
       Thread updateThread = new Thread(CheckUpdate);
       updateThread.Start();
@@ -57,7 +61,7 @@ namespace PushBullet
       }
 
       tabPage4.AutoScroll = true;
-      
+
 
       #region List Item
       //Add the first list item
@@ -126,8 +130,7 @@ namespace PushBullet
         try {
           //Get the devices
           result = wc.DownloadString("https://www.pushbullet.com/api/devices");
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
           //Oh no something went wrong, but what?
           result = ex.ToString();
         }
@@ -138,16 +141,15 @@ namespace PushBullet
           devices = (JArray)json["devices"];
           shared_devices = (JArray)json["shared_devices"];
           foreach (JObject o in devices) {
-            myBox.Items.Add(o["extras"]["model"]);
+            myBox.Items.Add(o["extras"]["nickname"]);
           }
           if (shared_devices != null) {
             foreach (JObject o in shared_devices) {
-              sharedBox.Items.Add(o["ownerName"] + " - " + o["extras"]["model"]);
+              sharedBox.Items.Add(o["extras"]["nickname"]);
             }
           }
 
-        }
-        else {
+        } else {
           MessageBox.Show("We failed and the site returned 404");
         }
         //Set selected device to first and display popup that the login was successfull
@@ -155,8 +157,7 @@ namespace PushBullet
         notifyIcon1.ShowBalloonTip(1000, "Authenticate", "The authentication was successful!", ToolTipIcon.Info);
         loginBtn.Visible = false;
         pushBtn.Enabled = true;
-      }
-      catch (Exception ex) {
+      } catch (Exception ex) {
         //Oops, something went wrong!
         MessageBox.Show(ex.ToString());
         MessageBox.Show(result);
@@ -179,8 +180,7 @@ namespace PushBullet
         //Check which device to send to
         if (myBox.SelectedIndex < 0) {
           deviceId = (int)shared_devices[sharedBox.SelectedIndex]["id"];
-        }
-        else {
+        } else {
           deviceId = (int)devices[myBox.SelectedIndex]["id"];
         }
 
@@ -191,21 +191,17 @@ namespace PushBullet
         //https://www.pushbullet.com/api
         if (type == "note") {
           parameters += String.Format("&title={0}&body={1}", title, message);
-        }
-        else if (type == "link") {
+        } else if (type == "link") {
           parameters += String.Format("&title={0}&url={1}", title, message);
-        }
-        else if (type == "address") {
+        } else if (type == "address") {
           parameters += String.Format("&name={0}&address={1}", title, message);
-        }
-        else if (type == "list") {
+        } else if (type == "list") {
           parameters += String.Format("&title={0}", title);
           if (message == "") {
             foreach (TextBox tb in textBoxes) {
               parameters += String.Format("&items={0}", tb.Text);
             }
-          }
-          else {
+          } else {
             string[] items = message.Split(new char[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
             foreach (string item in items) {
               parameters += String.Format("&items={0}", item);
@@ -219,8 +215,7 @@ namespace PushBullet
         if (type == "list") {
           CleanList();
         }
-      }
-      catch (Exception ex) {
+      } catch (Exception ex) {
         //Oops, sorry man
         MessageBox.Show(ex.ToString());
       }
@@ -233,18 +228,15 @@ namespace PushBullet
         PushNotification("link", linkTitle.Text, linkUrl.Text);
         linkTitle.Text = "";
         linkUrl.Text = "";
-      }
-      else if (tabControl1.SelectedTab.Text == "Note") {
+      } else if (tabControl1.SelectedTab.Text == "Note") {
         PushNotification("note", noteTitle.Text, noteTxt.Text);
         noteTitle.Text = "";
         noteTxt.Text = "";
-      }
-      else if (tabControl1.SelectedTab.Text == "Address") {
+      } else if (tabControl1.SelectedTab.Text == "Address") {
         PushNotification("address", addressTitle.Text, addressTxt.Text);
         addressTitle.Text = "";
         addressTxt.Text = "";
-      }
-      else if (tabControl1.SelectedTab.Text == "List") {
+      } else if (tabControl1.SelectedTab.Text == "List") {
         PushNotification("list", listTitle.Text, "");
       }
     }
@@ -260,12 +252,6 @@ namespace PushBullet
       noteToolStripMenuItem.Enabled = bIsText && !bIsLink;
       addressToolStripMenuItem.Enabled = bIsText && !bIsLink;
       listToolStripMenuItem.Enabled = bIsText && !bIsLink;
-      if (csrf != "") {
-        loginToolStripMenuItem.Visible = false;
-      }
-      else {
-        loginToolStripMenuItem.Visible = true;
-      }
     }
 
     private void notifyIcon1_MouseDoubleClick(object sender, MouseEventArgs e)
@@ -379,7 +365,7 @@ namespace PushBullet
 
     public void CleanList()
     {
-      for (int i = textBoxes.Count-1; i > 0; i--) {
+      for (int i = textBoxes.Count - 1; i > 0; i--) {
         //Textboxes
         tabPage4.Controls.Remove(textBoxes[i]);
         textBoxes.RemoveAt(i);
@@ -403,8 +389,88 @@ namespace PushBullet
         if (version != latestVersion) {
           notifyIcon1.ShowBalloonTip(1000, "Update", "There's an update available at dan-l.net!", ToolTipIcon.Info);
         }
+      } catch { }
+    }
+
+    public void QuickPush(string type, string title, string message)
+    {
+      GetDevices();
+      PushNotification(type, title, message);
+      Application.Exit();
+    }
+
+    private void okBtn(object sender, EventArgs e)
+    {
+      Hide();
+    }
+
+    void AddDevice(ContextMenuStrip cms, JToken deviceToken, bool shared, int index)
+    {
+      ToolStripMenuItem tsi = (ToolStripMenuItem)cms.Items.Add((string)deviceToken["extras"]["nickname"]);
+      tsi.ImageIndex = (shared ? 1 : 0);
+
+      // clone the menu
+      for (int i = 0; i < menuActions.Items.Count; i++) {
+        ToolStripItem tsiCopyFrom = menuActions.Items[i];
+
+        ToolStripItem tsiClone = tsi.DropDownItems.Add(tsiCopyFrom.Text);
+        tsiClone.Image = tsiCopyFrom.Image;
+        tsiClone.Click += new EventHandler((object sender, EventArgs e) => {
+          if (!shared) {
+            myBox.SelectedIndex = index;
+            sharedBox.ClearSelected();
+          } else {
+            myBox.ClearSelected();
+            sharedBox.SelectedIndex = index;
+          }
+          tsiCopyFrom.PerformClick();
+        });
+        tsi.DropDownItems.Add(tsiClone);
       }
-      catch { }
+    }
+
+    private void notifyIcon1_MouseDown(object sender, MouseEventArgs e)
+    {
+      if (e.Button == MouseButtons.Right) {
+        ContextMenuStrip cms = new ContextMenuStrip();
+        cms.ImageList = imgListIcons;
+
+        if (csrf == "") {
+          ToolStripItem tsi = cms.Items.Add("Authenticate");
+          tsi.Image = imgListIcons.Images[2];
+          tsi.Click += new EventHandler(authenticateTsi_Click);
+        } else {
+          for (int i = 0; i < devices.Count; i++) {
+            AddDevice(cms, devices[i], false, i);
+          }
+          for (int i = 0; i < shared_devices.Count; i++) {
+            AddDevice(cms, shared_devices[i], true, i);
+          }
+        }
+
+        cms.Items.Add(new ToolStripSeparator());
+
+        ToolStripItem tsiExit = cms.Items.Add("Exit");
+        tsiExit.Click += new EventHandler(exitTsi_Click);
+
+        notifyIcon1.ContextMenuStrip = cms;
+      }
+    }
+
+    void exitTsi_Click(object sender, EventArgs e)
+    {
+      // lol name
+      button3.PerformClick();
+    }
+
+    void authenticateTsi_Click(object sender, EventArgs e)
+    {
+      loginBtn.PerformClick();
+    }
+
+    private void button1_Click_2(object sender, EventArgs e)
+    {
+      Hide();
     }
 
   }

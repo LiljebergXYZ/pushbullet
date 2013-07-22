@@ -33,12 +33,11 @@
       this.label1 = new System.Windows.Forms.Label();
       this.pushBtn = new System.Windows.Forms.Button();
       this.notifyIcon1 = new System.Windows.Forms.NotifyIcon(this.components);
-      this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+      this.menuActions = new System.Windows.Forms.ContextMenuStrip(this.components);
       this.linkToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.noteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.addressToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-      this.loginToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-      this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      this.listToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.myBox = new System.Windows.Forms.ListBox();
       this.noteTitle = new System.Windows.Forms.TextBox();
       this.noteTxt = new System.Windows.Forms.TextBox();
@@ -61,12 +60,13 @@
       this.label7 = new System.Windows.Forms.Label();
       this.label8 = new System.Windows.Forms.Label();
       this.tabPage4 = new System.Windows.Forms.TabPage();
+      this.removeBtn = new System.Windows.Forms.Button();
       this.addItemBtn = new System.Windows.Forms.Button();
       this.listTitle = new System.Windows.Forms.TextBox();
       this.listLabel = new System.Windows.Forms.Label();
-      this.removeBtn = new System.Windows.Forms.Button();
-      this.listToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-      this.contextMenuStrip1.SuspendLayout();
+      this.imgListIcons = new System.Windows.Forms.ImageList(this.components);
+      this.button1 = new System.Windows.Forms.Button();
+      this.menuActions.SuspendLayout();
       this.tabControl1.SuspendLayout();
       this.tabPage1.SuspendLayout();
       this.tabPage2.SuspendLayout();
@@ -98,7 +98,7 @@
       this.pushBtn.Enabled = false;
       this.pushBtn.Location = new System.Drawing.Point(105, 169);
       this.pushBtn.Name = "pushBtn";
-      this.pushBtn.Size = new System.Drawing.Size(195, 23);
+      this.pushBtn.Size = new System.Drawing.Size(204, 23);
       this.pushBtn.TabIndex = 4;
       this.pushBtn.Text = "Push";
       this.pushBtn.UseVisualStyleBackColor = true;
@@ -106,30 +106,28 @@
       // 
       // notifyIcon1
       // 
-      this.notifyIcon1.ContextMenuStrip = this.contextMenuStrip1;
       this.notifyIcon1.Icon = ((System.Drawing.Icon)(resources.GetObject("notifyIcon1.Icon")));
       this.notifyIcon1.Text = "Pushbullet";
       this.notifyIcon1.Visible = true;
       this.notifyIcon1.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.notifyIcon1_MouseDoubleClick);
+      this.notifyIcon1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.notifyIcon1_MouseDown);
       // 
-      // contextMenuStrip1
+      // menuActions
       // 
-      this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+      this.menuActions.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.linkToolStripMenuItem,
             this.noteToolStripMenuItem,
             this.addressToolStripMenuItem,
-            this.listToolStripMenuItem,
-            this.loginToolStripMenuItem,
-            this.exitToolStripMenuItem});
-      this.contextMenuStrip1.Name = "contextMenuStrip1";
-      this.contextMenuStrip1.Size = new System.Drawing.Size(153, 158);
-      this.contextMenuStrip1.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuStrip1_Opening);
+            this.listToolStripMenuItem});
+      this.menuActions.Name = "contextMenuStrip1";
+      this.menuActions.Size = new System.Drawing.Size(117, 92);
+      this.menuActions.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuStrip1_Opening);
       // 
       // linkToolStripMenuItem
       // 
       this.linkToolStripMenuItem.Image = global::PushBullet.Properties.Resources.link1;
       this.linkToolStripMenuItem.Name = "linkToolStripMenuItem";
-      this.linkToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+      this.linkToolStripMenuItem.Size = new System.Drawing.Size(142, 22);
       this.linkToolStripMenuItem.Text = "Link";
       this.linkToolStripMenuItem.Click += new System.EventHandler(this.linkToolStripMenuItem_Click);
       // 
@@ -137,7 +135,7 @@
       // 
       this.noteToolStripMenuItem.Image = global::PushBullet.Properties.Resources.note;
       this.noteToolStripMenuItem.Name = "noteToolStripMenuItem";
-      this.noteToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+      this.noteToolStripMenuItem.Size = new System.Drawing.Size(142, 22);
       this.noteToolStripMenuItem.Text = "Note";
       this.noteToolStripMenuItem.Click += new System.EventHandler(this.noteToolStripMenuItem_Click);
       // 
@@ -145,24 +143,17 @@
       // 
       this.addressToolStripMenuItem.Image = global::PushBullet.Properties.Resources.tag;
       this.addressToolStripMenuItem.Name = "addressToolStripMenuItem";
-      this.addressToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+      this.addressToolStripMenuItem.Size = new System.Drawing.Size(142, 22);
       this.addressToolStripMenuItem.Text = "Address";
       this.addressToolStripMenuItem.Click += new System.EventHandler(this.addressToolStripMenuItem_Click);
       // 
-      // loginToolStripMenuItem
+      // listToolStripMenuItem
       // 
-      this.loginToolStripMenuItem.Image = global::PushBullet.Properties.Resources.lock1;
-      this.loginToolStripMenuItem.Name = "loginToolStripMenuItem";
-      this.loginToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-      this.loginToolStripMenuItem.Text = "Authenticate";
-      this.loginToolStripMenuItem.Click += new System.EventHandler(this.loginToolStripMenuItem_Click);
-      // 
-      // exitToolStripMenuItem
-      // 
-      this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-      this.exitToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-      this.exitToolStripMenuItem.Text = "Exit";
-      this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
+      this.listToolStripMenuItem.Image = global::PushBullet.Properties.Resources.document;
+      this.listToolStripMenuItem.Name = "listToolStripMenuItem";
+      this.listToolStripMenuItem.Size = new System.Drawing.Size(142, 22);
+      this.listToolStripMenuItem.Text = "List";
+      this.listToolStripMenuItem.Click += new System.EventHandler(this.listToolStripMenuItem_Click);
       // 
       // myBox
       // 
@@ -208,7 +199,7 @@
       // 
       // button3
       // 
-      this.button3.Location = new System.Drawing.Point(319, 169);
+      this.button3.Location = new System.Drawing.Point(315, 169);
       this.button3.Name = "button3";
       this.button3.Size = new System.Drawing.Size(75, 23);
       this.button3.TabIndex = 5;
@@ -265,7 +256,7 @@
       this.tabPage1.Location = new System.Drawing.Point(4, 22);
       this.tabPage1.Name = "tabPage1";
       this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-      this.tabPage1.Size = new System.Drawing.Size(266, 105);
+      this.tabPage1.Size = new System.Drawing.Size(279, 105);
       this.tabPage1.TabIndex = 0;
       this.tabPage1.Text = "Note";
       this.tabPage1.UseVisualStyleBackColor = true;
@@ -279,7 +270,7 @@
       this.tabPage2.Location = new System.Drawing.Point(4, 22);
       this.tabPage2.Name = "tabPage2";
       this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-      this.tabPage2.Size = new System.Drawing.Size(266, 105);
+      this.tabPage2.Size = new System.Drawing.Size(279, 105);
       this.tabPage2.TabIndex = 1;
       this.tabPage2.Text = "Link";
       this.tabPage2.UseVisualStyleBackColor = true;
@@ -324,7 +315,7 @@
       this.tabPage3.Controls.Add(this.label8);
       this.tabPage3.Location = new System.Drawing.Point(4, 22);
       this.tabPage3.Name = "tabPage3";
-      this.tabPage3.Size = new System.Drawing.Size(266, 105);
+      this.tabPage3.Size = new System.Drawing.Size(279, 105);
       this.tabPage3.TabIndex = 2;
       this.tabPage3.Text = "Address";
       this.tabPage3.UseVisualStyleBackColor = true;
@@ -375,6 +366,16 @@
       this.tabPage4.Text = "List";
       this.tabPage4.UseVisualStyleBackColor = true;
       // 
+      // removeBtn
+      // 
+      this.removeBtn.Location = new System.Drawing.Point(185, 61);
+      this.removeBtn.Name = "removeBtn";
+      this.removeBtn.Size = new System.Drawing.Size(75, 23);
+      this.removeBtn.TabIndex = 23;
+      this.removeBtn.Text = "Remove item";
+      this.removeBtn.UseVisualStyleBackColor = true;
+      this.removeBtn.Click += new System.EventHandler(this.removeBtn_Click);
+      // 
       // addItemBtn
       // 
       this.addItemBtn.Location = new System.Drawing.Point(66, 61);
@@ -401,29 +402,30 @@
       this.listLabel.TabIndex = 17;
       this.listLabel.Text = "Title:";
       // 
-      // removeBtn
+      // imgListIcons
       // 
-      this.removeBtn.Location = new System.Drawing.Point(185, 61);
-      this.removeBtn.Name = "removeBtn";
-      this.removeBtn.Size = new System.Drawing.Size(75, 23);
-      this.removeBtn.TabIndex = 23;
-      this.removeBtn.Text = "Remove item";
-      this.removeBtn.UseVisualStyleBackColor = true;
-      this.removeBtn.Click += new System.EventHandler(this.removeBtn_Click);
+      this.imgListIcons.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imgListIcons.ImageStream")));
+      this.imgListIcons.TransparentColor = System.Drawing.Color.Transparent;
+      this.imgListIcons.Images.SetKeyName(0, "phone.png");
+      this.imgListIcons.Images.SetKeyName(1, "phone_share.png");
+      this.imgListIcons.Images.SetKeyName(2, "lock.png");
       // 
-      // listToolStripMenuItem
+      // button1
       // 
-      this.listToolStripMenuItem.Image = global::PushBullet.Properties.Resources.document;
-      this.listToolStripMenuItem.Name = "listToolStripMenuItem";
-      this.listToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-      this.listToolStripMenuItem.Text = "List";
-      this.listToolStripMenuItem.Click += new System.EventHandler(this.listToolStripMenuItem_Click);
+      this.button1.Location = new System.Drawing.Point(11, 169);
+      this.button1.Name = "button1";
+      this.button1.Size = new System.Drawing.Size(81, 23);
+      this.button1.TabIndex = 16;
+      this.button1.Text = "OK";
+      this.button1.UseVisualStyleBackColor = true;
+      this.button1.Click += new System.EventHandler(this.button1_Click_2);
       // 
       // NewAPI
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.ClientSize = new System.Drawing.Size(406, 199);
+      this.Controls.Add(this.button1);
       this.Controls.Add(this.settingsBtn);
       this.Controls.Add(this.label5);
       this.Controls.Add(this.sharedBox);
@@ -441,7 +443,7 @@
       this.Text = "Pushbullet Desktop";
       this.Activated += new System.EventHandler(this.Form1_Activated);
       this.Load += new System.EventHandler(this.Form1_Load);
-      this.contextMenuStrip1.ResumeLayout(false);
+      this.menuActions.ResumeLayout(false);
       this.tabControl1.ResumeLayout(false);
       this.tabPage1.ResumeLayout(false);
       this.tabPage1.PerformLayout();
@@ -461,17 +463,15 @@
     public System.Windows.Forms.Button loginBtn;
     public System.Windows.Forms.Label label1;
     private System.Windows.Forms.NotifyIcon notifyIcon1;
-    private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
+    private System.Windows.Forms.ContextMenuStrip menuActions;
     private System.Windows.Forms.ToolStripMenuItem linkToolStripMenuItem;
     private System.Windows.Forms.ToolStripMenuItem noteToolStripMenuItem;
-    private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
     private System.Windows.Forms.ListBox myBox;
     private System.Windows.Forms.TextBox noteTitle;
     private System.Windows.Forms.TextBox noteTxt;
     private System.Windows.Forms.Label label2;
     private System.Windows.Forms.Label label3;
     private System.Windows.Forms.Button button3;
-    private System.Windows.Forms.ToolStripMenuItem loginToolStripMenuItem;
     private System.Windows.Forms.ListBox sharedBox;
     public System.Windows.Forms.Label label5;
     public System.Windows.Forms.Button pushBtn;
@@ -495,6 +495,8 @@
     private System.Windows.Forms.ToolStripMenuItem addressToolStripMenuItem;
     private System.Windows.Forms.Button removeBtn;
     private System.Windows.Forms.ToolStripMenuItem listToolStripMenuItem;
+    private System.Windows.Forms.ImageList imgListIcons;
+    private System.Windows.Forms.Button button1;
   }
 }
 
