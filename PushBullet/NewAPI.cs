@@ -141,11 +141,17 @@ namespace PushBullet
           devices = (JArray)json["devices"];
           shared_devices = (JArray)json["shared_devices"];
           foreach (JObject o in devices) {
-            myBox.Items.Add(o["extras"]["nickname"]);
+            if (o["extras"]["nickname"] != null)
+              myBox.Items.Add(o["extras"]["nickname"]);
+            else
+              myBox.Items.Add(o["extras"]["model"]);
           }
           if (shared_devices != null) {
             foreach (JObject o in shared_devices) {
-              sharedBox.Items.Add(o["extras"]["nickname"]);
+              if (o["extras"]["nickname"] != null)
+                sharedBox.Items.Add(o["extras"]["nickname"]);
+              else
+                sharedBox.Items.Add(o["extras"]["model"]);
             }
           }
 
@@ -406,7 +412,12 @@ namespace PushBullet
 
     void AddDevice(ContextMenuStrip cms, JToken deviceToken, bool shared, int index)
     {
-      ToolStripMenuItem tsi = (ToolStripMenuItem)cms.Items.Add((string)deviceToken["extras"]["nickname"]);
+      ToolStripMenuItem tsi = null;
+      if ((string)deviceToken["extras"]["nickname"] == null)
+        tsi = (ToolStripMenuItem)cms.Items.Add((string)deviceToken["extras"]["model"]);
+      else
+        tsi = (ToolStripMenuItem)cms.Items.Add((string)deviceToken["extras"]["nickname"]);
+
       tsi.ImageIndex = (shared ? 1 : 0);
 
       // clone the menu
@@ -443,8 +454,10 @@ namespace PushBullet
           for (int i = 0; i < devices.Count; i++) {
             AddDevice(cms, devices[i], false, i);
           }
-          for (int i = 0; i < shared_devices.Count; i++) {
-            AddDevice(cms, shared_devices[i], true, i);
+          if (shared_devices != null) {
+            for (int i = 0; i < shared_devices.Count; i++) {
+              AddDevice(cms, shared_devices[i], true, i);
+            }
           }
         }
 
