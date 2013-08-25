@@ -26,7 +26,7 @@ namespace PushBullet
     private JArray shared_devices;
     private bool hideMe;
     private string apikey = "";
-    private string version = "1.3";
+    private string version = "1.3.1";
     private WebClient wc;
     private List<TextBox> textBoxes = new List<TextBox>();
     private List<Label> listLabels = new List<Label>();
@@ -53,6 +53,8 @@ namespace PushBullet
 
       Thread updateThread = new Thread(CheckUpdate);
       updateThread.Start();
+
+      this.Text = "Pushbullet Desktop " + version;
 
       //Create an authenticated webclient if apikey already supplied
       apikey = Properties.Settings.Default.APIKey;
@@ -393,7 +395,7 @@ namespace PushBullet
         WebClient wc = new WebClient();
         string latestVersion = wc.DownloadString("http://dan-l.net/programs/pushbulletversion.txt");
         if (version != latestVersion) {
-          notifyIcon1.ShowBalloonTip(1000, "Update", "There's an update available at dan-l.net!", ToolTipIcon.Info);
+          notifyIcon1.ShowBalloonTip(1000, "Update", "There's an update available at dan-l.net! "+latestVersion, ToolTipIcon.Info);
         }
       } catch { }
     }
