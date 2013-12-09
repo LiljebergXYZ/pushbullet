@@ -20,13 +20,13 @@ namespace PushBullet
   {
     #region Members
     public static CookieContainer cookieContainer = new CookieContainer();
-    private string HOST = "https://www.pushbullet.com";
+    private string HOST = "https://api.pushbullet.com";
     private string csrf = "";
     private JArray devices;
     private JArray shared_devices;
     private bool hideMe;
     private string apikey = "";
-    private string version = "1.3.1";
+    private string version = "1.3.2";
     private WebClient wc;
     private List<TextBox> textBoxes = new List<TextBox>();
     private List<Label> listLabels = new List<Label>();
@@ -131,7 +131,7 @@ namespace PushBullet
       try {
         try {
           //Get the devices
-          result = wc.DownloadString("https://www.pushbullet.com/api/devices");
+          result = wc.DownloadString("https://api.pushbullet.com/api/devices");
         } catch (Exception ex) {
           //Oh no something went wrong, but what?
           result = ex.ToString();
@@ -196,7 +196,7 @@ namespace PushBullet
         string parameters = String.Format("device_id={0}&type={1}", deviceId, type);
 
         //Send different parameters depending on type to push
-        //https://www.pushbullet.com/api
+        //https://api.pushbullet.com/api
         if (type == "note") {
           parameters += String.Format("&title={0}&body={1}", title, message);
         } else if (type == "link") {
