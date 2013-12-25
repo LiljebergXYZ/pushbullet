@@ -26,7 +26,7 @@ namespace PushBullet
     private JArray shared_devices;
     private bool hideMe;
     private string apikey = "";
-    private string version = "1.3.2";
+    private string version = "1.3.3";
     private WebClient wc;
     private List<TextBox> textBoxes = new List<TextBox>();
     private List<Label> listLabels = new List<Label>();
@@ -131,7 +131,7 @@ namespace PushBullet
       try {
         try {
           //Get the devices
-          result = wc.DownloadString("https://api.pushbullet.com/api/devices");
+          result = wc.DownloadString(HOST + "/api/devices");
         } catch (Exception ex) {
           //Oh no something went wrong, but what?
           result = ex.ToString();
@@ -184,12 +184,12 @@ namespace PushBullet
         wc.Headers[HttpRequestHeader.ContentType] = "application/x-www-form-urlencoded";
         wc.Headers[HttpRequestHeader.Accept] = "application/json";
 
-        int deviceId;
+        long deviceId;
         //Check which device to send to
         if (myBox.SelectedIndex < 0) {
-          deviceId = (int)shared_devices[sharedBox.SelectedIndex]["id"];
+          deviceId = (long)shared_devices[sharedBox.SelectedIndex]["id"];
         } else {
-          deviceId = (int)devices[myBox.SelectedIndex]["id"];
+          deviceId = (long)devices[myBox.SelectedIndex]["id"];
         }
 
         //First parameters to send
@@ -218,7 +218,7 @@ namespace PushBullet
         }
 
         //Send the parameters and get the result
-        string result = wc.UploadString(HOST + "/api/pushes", parameters);
+        string result = wc.UploadString(HOST + "/v2/pushes", parameters);
         notifyIcon1.ShowBalloonTip(1000, "Pushed", "Successfully pushed " + type + " to phone", ToolTipIcon.Info);
         if (type == "list") {
           CleanList();
