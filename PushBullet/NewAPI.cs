@@ -26,7 +26,7 @@ namespace PushBullet
     private JArray shared_devices;
     private bool hideMe;
     private string apikey = "";
-    private string version = "1.3.3";
+    private string version = "1.3.4";
     private WebClient wc;
     private List<TextBox> textBoxes = new List<TextBox>();
     private List<Label> listLabels = new List<Label>();
@@ -48,6 +48,9 @@ namespace PushBullet
       }
       if (args.Length == 4) {
         QuickPush(args[1], args[2], args[3]);
+        hideMe = true;
+      } else if (args.Length == 6) {
+        QuickPush(args[1], args[2], Convert.ToInt16(args[3]), args[4], args[5]);
         hideMe = true;
       }
 
@@ -109,14 +112,18 @@ namespace PushBullet
       }
     }
 
-    public void GetDevices()
+    public void GetDevices(string ApiKey = null)
     {
       //Check if there is an apikey supplied and create an authenticated webclient
       if (wc == null && apikey == "") {
-        apikey = Properties.Settings.Default.APIKey;
-        if (apikey == "") {
-          MessageBox.Show("Please enter your API key in the settings.");
-          return;
+        if(ApiKey == null){
+          apikey = Properties.Settings.Default.APIKey;
+          if (apikey == "") {
+            MessageBox.Show("Please enter your API key in the settings.");
+            return;
+          }
+        }else{
+          apikey = ApiKey;
         }
         wc = AuthenticatedWebClient();
       }
@@ -403,6 +410,14 @@ namespace PushBullet
     public void QuickPush(string type, string title, string message)
     {
       GetDevices();
+      PushNotification(type, title, message);
+      Application.Exit();
+    }
+
+    public void QuickPush(string type, string apikey, int id, string title, string message)
+    {
+      GetDevices(apikey);
+      myBox.SelectedIndex = id;
       PushNotification(type, title, message);
       Application.Exit();
     }
