@@ -26,8 +26,8 @@ namespace PushBullet
     private JArray shared_devices;
     private bool hideMe;
     private string apikey = "";
-    private string version = "1.3.4";
-    private WebClient wc;
+    private string version = "1.3.5";
+    public WebClient wc;
     private List<TextBox> textBoxes = new List<TextBox>();
     private List<Label> listLabels = new List<Label>();
     #endregion
@@ -65,6 +65,11 @@ namespace PushBullet
         wc = AuthenticatedWebClient();
       }
 
+      if (Properties.Settings.Default.AutoAuth)
+      {
+          GetDevices();
+      }
+
       tabPage4.AutoScroll = true;
 
 
@@ -89,7 +94,14 @@ namespace PushBullet
     public WebClient AuthenticatedWebClient()
     {
       WebClient wc = new WebClient();
-      wc.Proxy = null;
+      if (Properties.Settings.Default.UseProxy)
+      {
+          wc.Proxy = new WebProxy(Properties.Settings.Default.ProxyIP, Properties.Settings.Default.ProxyPort);
+      }
+      else
+      {
+          wc.Proxy = null;
+      }
       string authEncoded = Convert.ToBase64String(Encoding.UTF8.GetBytes(apikey + ":"));
       wc.Headers[HttpRequestHeader.UserAgent] = "Pushbullet.Desktop.Application(" + version + ")";
       wc.Headers[HttpRequestHeader.Authorization] = string.Format("Basic {0}", authEncoded);
@@ -314,7 +326,7 @@ namespace PushBullet
     private void settingsBtn_Click(object sender, EventArgs e)
     {
       //Show settings form
-      new SettingsFrm().ShowDialog();
+      new SettingsFrm(this).ShowDialog();
     }
 
     private void Form1_Activated(object sender, EventArgs e)
