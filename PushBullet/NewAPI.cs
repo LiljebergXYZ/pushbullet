@@ -217,21 +217,21 @@ namespace PushBullet
         //Send different parameters depending on type to push
         //https://api.pushbullet.com/api
         if (type == "note") {
-          parameters += String.Format("&title={0}&body={1}", title, message);
+          parameters += String.Format("&title={0}&body={1}", Uri.EscapeUriString(title), Uri.EscapeUriString(message));
         } else if (type == "link") {
-          parameters += String.Format("&title={0}&url={1}", title, message);
+          parameters += String.Format("&title={0}&url={1}", Uri.EscapeUriString(title), Uri.EscapeUriString(message));
         } else if (type == "address") {
-          parameters += String.Format("&name={0}&address={1}", title, message);
+          parameters += String.Format("&name={0}&address={1}", Uri.EscapeUriString(title), Uri.EscapeUriString(message));
         } else if (type == "list") {
-          parameters += String.Format("&title={0}", title);
+          parameters += String.Format("&title={0}", Uri.EscapeUriString(title));
           if (message == "") {
             foreach (TextBox tb in textBoxes) {
-              parameters += String.Format("&items={0}", tb.Text);
+              parameters += String.Format("&items={0}", Uri.EscapeUriString(tb.Text));
             }
           } else {
             string[] items = message.Split(new char[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
             foreach (string item in items) {
-              parameters += String.Format("&items={0}", item);
+              parameters += String.Format("&items={0}", Uri.EscapeUriString(item));
             }
           }
         }
